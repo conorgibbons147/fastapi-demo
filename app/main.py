@@ -47,6 +47,8 @@ def data_of_some_kind():
 
 @app.get('/genres')
 def get_genres():
+    db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
+    cur=db.cursor()
     query = "SELECT * FROM genres ORDER BY genreid;"
     try:    
         cur.execute(query)
@@ -61,6 +63,8 @@ def get_genres():
 
 @app.get('/songs')
 def get_songs():
+    db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
+    cur=db.cursor()
     query = "SELECT songs.*, genres.genre AS genre FROM songs JOIN genres ON songs.genre = genres.genreid ORDER BY songs.title;"
     try:
         cur.execute(query)
