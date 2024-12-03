@@ -13,9 +13,6 @@ DBUSER = "admin"
 DBPASS = os.getenv('DBPASS')
 DB = "hjd3db"
 
-db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
-cur=db.cursor()
-
 app = FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
@@ -29,22 +26,6 @@ app.add_middleware(
 def zone_apex():
     return {"Good Day": "Sunshine"}
 
-@app.get("/add/{a}/{b}")
-def add(a: int, b: int):
-    return {"sum": a + b}
-
-@app.get("/multiply/{c}/{d}")
-def multiply(c: int, d: int):
-    return{"product": c * d}
-
-@app.get("/square/{e}")
-def square(e: int):
-    return{"square": e * e}
-
-@app.get("/data")
-def data_of_some_kind():
-    return {"The number is": "7"}
-
 @app.get('/genres')
 def get_genres():
     db = mysql.connector.connect(user=DBUSER, host=DBHOST, password=DBPASS, database=DB)
@@ -57,9 +38,14 @@ def get_genres():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
+        cur.close()
+        db.close()
         return(json_data)
     except Error as e:
+        cur.close()
+        db.close()
         return {"Error": "MySQL Error: " + str(e)}
+
 
 @app.get('/songs')
 def get_songs():
@@ -73,6 +59,12 @@ def get_songs():
         json_data=[]
         for result in results:
             json_data.append(dict(zip(headers,result)))
+        cur.close()
+        db.close()
         return(json_data)
     except Error as e:
+        cur.close()
+        db.close()
         return {"Error": "MySQL Error: " + str(e)}
+
+        
